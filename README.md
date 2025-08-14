@@ -9,8 +9,8 @@ This application calculates **total greenhouse gas (GHG) emissions** based on us
 ## 📸 Preview
 
 <img width="1440" height="776" alt="Screen Shot 2025-08-13 at 19 25 46" src="https://github.com/user-attachments/assets/54b23271-f27e-4506-bbf0-7456ff5a6a9e" />
-<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 20 10" src="https://github.com/user-attachments/assets/bf38e2ca-362b-4697-b59d-6fdb25ff67bd" />
 <img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 19 54" src="https://github.com/user-attachments/assets/4164c441-bdd3-4599-a08e-627627c42ffa" />
+<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 20 10" src="https://github.com/user-attachments/assets/bf38e2ca-362b-4697-b59d-6fdb25ff67bd" />
 
 ---
 
