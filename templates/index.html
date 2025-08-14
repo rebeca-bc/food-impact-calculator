@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %} Home - Food Impact Calculator {% endblock %}
+{% block content %}
+    <h1>Food Impact Calculator</h1>
+    <h3>This is a calculator to show what is the impact of your weekly food groceries. The process is simple, you put how much you buy per week of each of our ingredients (in the database) and based on that you will get a inisght on your impact, with specifics on what affects what and how much. Perfect to raise awareness</h3>
+    <hr>
+    <div class="container">
+        <form id="consumption-form" class="col g-2">
+            <label>Select foods:</label>
+            <div class="input-row">
+                <select id="food-dropdown">
+                    <option value="">-- Choose a food --</option>
+                    {% for item in items %}
+                        <option value="{{ item[0] }}">{{ item[1] }}</option>
+                    {% endfor %}
+                </select>
+                <input 
+                    type="number" 
+                    id="food-qty" 
+                    class="food-qty"
+                    placeholder="Qty in grams" 
+                    min="1" 
+                    style="width: 111px; background-color: rgb(223, 223, 236, 0.66)" >
+                <div class="col-auto">
+                    <button id="add-btn" class="add-btn" type="submit">Add</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="items-list">
+            <ul id="items-list">
+                <!-- items are added when selected on the dropdown menu above -->
+            </ul>
+        </div>
+
+        <div class="mt-3">
+            <!-- hidden form to submit list items as we are using a new page rendering -->
+            <form id="estimate-form" action="/estimates" method="POST">
+                <input type="hidden" name="foods" id="estimate-input">
+                <button type="submit" id="estimate-btn" class="estimate-btn">Estimate Total</button>
+            </form>
+        </div>
+    </card>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+CREATE TABLE food (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,   
+    food TEXT,                              
+    land_use REAL,                          
+    animal_feed REAL,
+    farm REAL,
+    processing REAL,
+    transport REAL,
+    packaging REAL,                        
+    retail REAL,
+    total_emissions REAL
+);
+CREATE TABLE sqlite_sequence(name,seq);
