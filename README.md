@@ -45,28 +45,22 @@ This application calculates **total greenhouse gas (GHG) emissions** based on us
 git clone https://github.com/yourusername/food-impact.git
 cd food-impact
 
-
 2. **Create a virtual environment & activate it**
 python -m venv venv
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
+Then:
+  On macOS/Linux: source venv/bin/activate
+  On Windows: venv\Scripts\activate
 
-
-3. **Install dependencies**
+4. **Install dependencies**
 pip install -r requirements.txt
 
-
-4. **Seed the database (optional if using SQLite sample)**
+5. **Seed the database (optional if using SQLite sample)**
 python seed_db.py
 
-
-5. **Run the app**
+6. **Run the app**
 flask run
 
-
-6. **Open in your browser**
+7. **Open in your browser**
 http://127.0.0.1:5000/
 
 ---
