@@ -1,0 +1,352 @@
+{% extends "layout.html" %}
+
+{% block title %} ML Predictor - Food Impact Calculator {% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<div class="ml-hero">
+    <div class="ml-hero-content">
+        <div class="ml-hero-header">
+            <h1><i class="bi bi-robot"></i> AI Emissions Predictor</h1>
+            <button class="info-btn" onclick="toggleModelInfo()">
+                <i class="bi bi-info-circle"></i> Model Info
+            </button>
+        </div>
+        <p class="ml-hero-subtitle">Predict emissions for custom foods using our trained ML model</p>
+    </div>
+</div>
+
+<!-- Model Info Card (Hidden by default) -->
+<div id="model-info-card" class="model-info-card" style="display: none;">
+    <div class="model-info-header">
+        <h3><i class="bi bi-cpu"></i> About Our ML Model</h3>
+        <button class="close-btn" onclick="toggleModelInfo()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+    
+    <div class="model-info-content">
+        <div class="info-section">
+            <h4><i class="bi bi-diagram-3"></i> Model Architecture</h4>
+            <p><strong>Algorithm:</strong> Random Forest Regressor</p>
+            <p><strong>Type:</strong> Ensemble Learning (100 Decision Trees)</p>
+            <p><strong>Task:</strong> Regression (predicting continuous values)</p>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="bi bi-graph-up"></i> Performance Metrics</h4>
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">R² Score</div>
+                    <div class="metric-value">0.95</div>
+                    <div class="metric-desc">95% variance explained</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">MAE</div>
+                    <div class="metric-value">0.94 kg</div>
+                    <div class="metric-desc">Average error</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">RMSE</div>
+                    <div class="metric-value">2.34 kg</div>
+                    <div class="metric-desc">Root mean squared</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="bi bi-list-columns"></i> Training Details</h4>
+            <ul class="training-details">
+                <li><strong>Training Data:</strong> 43 foods with complete LCA data</li>
+                <li><strong>Features:</strong> 7 supply chain stages (land use, farm, transport, etc.)</li>
+                <li><strong>Split:</strong> 80% training, 20% testing</li>
+                <li><strong>Cross-Validation:</strong> 5-fold to ensure robustness</li>
+                <li><strong>Feature Importance:</strong> Farm (48%) > Land Use (37%) > Processing (5%)</li>
+            </ul>
+        </div>
+        
+        <div class="info-section">
+            <h4><i class="bi bi-lightbulb"></i> How It Works</h4>
+            <ol class="how-it-works">
+                <li>You input the 7 supply chain emission values</li>
+                <li>Model analyzes patterns learned from 43 real foods</li>
+                <li>Ensemble of 100 trees vote on the prediction</li>
+                <li>Average prediction is returned with high confidence</li>
+            </ol>
+        </div>
+        
+        <div class="info-section info-note">
+            <i class="bi bi-info-circle-fill"></i>
+            <p><strong>Note:</strong> This model works best for foods with similar production patterns to those in our training data. Unusual foods may have less accurate predictions.</p>
+        </div>
+    </div>
+</div>
+
+<div class="ml-container">
+    <div class="ml-form-card">
+        <div class="form-header">
+            <h2><i class="bi bi-sliders"></i> Supply Chain Data</h2>
+            <p>Enter emission values for each production stage (in kg CO₂e per kg of food)</p>
+        </div>
+        
+        <form id="ml-prediction-form">
+            <div class="ml-form-grid">
+                <!-- Land Use Change -->
+                <div class="ml-input-group">
+                    <label for="land_use">
+                        <i class="bi bi-globe2"></i> Land Use Change
+                    </label>
+                    <input type="number" step="0.01" id="land_use" name="land_use" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Deforestation, land conversion</small>
+                </div>
+
+                <!-- Animal Feed -->
+                <div class="ml-input-group">
+                    <label for="animal_feed">
+                        <i class="bi bi-egg"></i> Animal Feed
+                    </label>
+                    <input type="number" step="0.01" id="animal_feed" name="animal_feed" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Feed production emissions</small>
+                </div>
+
+                <!-- Farm -->
+                <div class="ml-input-group">
+                    <label for="farm">
+                        <i class="bi bi-house"></i> Farm Operations
+                    </label>
+                    <input type="number" step="0.01" id="farm" name="farm" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Methane, fertilizers, farming</small>
+                </div>
+
+                <!-- Processing -->
+                <div class="ml-input-group">
+                    <label for="processing">
+                        <i class="bi bi-gear"></i> Processing
+                    </label>
+                    <input type="number" step="0.01" id="processing" name="processing" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Food processing facilities</small>
+                </div>
+
+                <!-- Transport -->
+                <div class="ml-input-group">
+                    <label for="transport">
+                        <i class="bi bi-truck"></i> Transport
+                    </label>
+                    <input type="number" step="0.01" id="transport" name="transport" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Logistics and shipping</small>
+                </div>
+
+                <!-- Packaging -->
+                <div class="ml-input-group">
+                    <label for="packaging">
+                        <i class="bi bi-box"></i> Packaging
+                    </label>
+                    <input type="number" step="0.01" id="packaging" name="packaging" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Packaging materials</small>
+                </div>
+
+                <!-- Retail -->
+                <div class="ml-input-group">
+                    <label for="retail">
+                        <i class="bi bi-shop"></i> Retail
+                    </label>
+                    <input type="number" step="0.01" id="retail" name="retail" 
+                           class="ml-input" placeholder="0.00" value="0" required>
+                    <small class="input-hint">Retail, refrigeration</small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="resetForm()">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-stars"></i> Predict Emissions
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Prediction Result -->
+    <div id="prediction-result" class="prediction-result-card" style="display: none;">
+        <div class="result-header">
+            <h2><i class="bi bi-check-circle"></i> Prediction Complete</h2>
+        </div>
+        
+        <div class="result-main">
+            <div class="result-label">Predicted Total Emissions</div>
+            <div class="result-value">
+                <span id="predicted-value">0</span>
+                <span class="result-unit">kg CO₂e per kg</span>
+            </div>
+            <div class="result-context">
+                <i class="bi bi-info-circle"></i>
+                <span>Based on patterns from 43 real foods in our database</span>
+            </div>
+        </div>
+        
+        <div class="result-breakdown">
+            <h3><i class="bi bi-pie-chart"></i> Emission Breakdown</h3>
+            <div class="chart-container">
+                <canvas id="breakdown-chart"></canvas>
+            </div>
+        </div>
+        
+        <div class="result-confidence">
+            <div class="confidence-badge">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                    <strong>Model Confidence</strong>
+                    <p>R² Score: 0.95 (Highly Accurate)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Toggle Model Info Card
+        function toggleModelInfo() {
+            const card = document.getElementById('model-info-card');
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                // Smooth scroll to card
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else {
+                card.style.display = 'none';
+            }
+        }
+        
+        // Reset Form
+        function resetForm() {
+            document.getElementById('ml-prediction-form').reset();
+            document.getElementById('prediction-result').style.display = 'none';
+        }
+        
+        // Handle ML prediction form submission
+        document.getElementById('ml-prediction-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                land_use: parseFloat(document.getElementById('land_use').value),
+                animal_feed: parseFloat(document.getElementById('animal_feed').value),
+                farm: parseFloat(document.getElementById('farm').value),
+                processing: parseFloat(document.getElementById('processing').value),
+                transport: parseFloat(document.getElementById('transport').value),
+                packaging: parseFloat(document.getElementById('packaging').value),
+                retail: parseFloat(document.getElementById('retail').value)
+            };
+
+            try {
+                // Call ML API endpoint
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.predicted_emissions) {
+                    // Show prediction result
+                    document.getElementById('predicted-value').textContent = 
+                        result.predicted_emissions.toFixed(2);
+                    document.getElementById('prediction-result').style.display = 'block';
+
+                    // Create breakdown chart
+                    const ctx = document.getElementById('breakdown-chart');
+                    
+                    // Destroy existing chart if any
+                    if (window.breakdownChart) {
+                        window.breakdownChart.destroy();
+                    }
+
+                    window.breakdownChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Land Use', 'Animal Feed', 'Farm', 'Processing', 
+                                   'Transport', 'Packaging', 'Retail'],
+                            datasets: [{
+                                label: 'Emission Breakdown',
+                                data: [
+                                    formData.land_use,
+                                    formData.animal_feed,
+                                    formData.farm,
+                                    formData.processing,
+                                    formData.transport,
+                                    formData.packaging,
+                                    formData.retail
+                                ],
+                                backgroundColor: [
+                                    '#76B3B5',
+                                    '#8CA2C0',
+                                    '#5DD39E',
+                                    '#F4A261',
+                                    '#E76F51',
+                                    '#2A9D8F',
+                                    '#E9C46A'
+                                ],
+                                borderWidth: 2,
+                                borderColor: 'rgba(255, 255, 255, 0.1)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        color: '#E0E0E0',
+                                        font: {
+                                            family: 'Inter',
+                                            size: 12
+                                        },
+                                        padding: 15
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(13, 17, 23, 0.95)',
+                                    titleColor: '#76B3B5',
+                                    bodyColor: '#E0E0E0',
+                                    borderColor: '#76B3B5',
+                                    borderWidth: 1,
+                                    padding: 12,
+                                    displayColors: true,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.label + ': ' + context.parsed.toFixed(2) + ' kg CO₂e';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Scroll to result
+                    document.getElementById('prediction-result').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error making prediction: ' + error.message);
+            }
+        });
+    </script>
+
+{% endblock %}

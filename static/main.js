@@ -1,3 +1,7 @@
+// Modern Food Impact Calculator - JavaScript
+
+// Store selected items
+let selectedItems = [];
 
 const consumptionForm = document.getElementById("consumption-form");
 if (consumptionForm) {
@@ -5,79 +9,100 @@ if (consumptionForm) {
         e.preventDefault();
 
         const select = document.getElementById("food-dropdown");
-        // get the selected id
         const foodId = select.value;
-        // get the selected name of the food, since its the text of the option
         const foodName = select.options[select.selectedIndex].text;
-        // get the food qty value (in the same form) 
         const quantity = document.getElementById("food-qty").value;
 
         if (!foodId) {
             alert("Please select a food");
             return;
         }
+        
+        if (!quantity || quantity <= 0) {
+            alert("Please enter a valid quantity");
+            return;
+        }
+
         try {
-            // connection to flask (app.py)
             const response = await fetch('/api/add', {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({id: foodId, food: foodName, qty: quantity})
+                body: JSON.stringify({foodId: foodId, foodName: foodName, quantity: quantity})
             });
 
             const data = await response.json();
 
-            // add the info to the list
-            // find the list
-            const list = document.getElementById("items-list")
-            // create a new item on the list 
-            const li = document.createElement("li");
-            // define the values on the list item (for future fetching)
-            li.textContent = `${foodName} — ${quantity} grams`;
-            li.classList.add("selected-list");
-            li.dataset.food = foodName;          
-            li.dataset.id = foodId;          
-            li.dataset.qty = quantity;
+            // Add to selected items array
+            selectedItems.push({
+                id: foodId,
+                food: foodName,
+                qty: quantity
+            });
 
-            list.appendChild(li);
+            // Update the display
+            updateItemsList();
+
+            // Clear inputs
+            select.value = "";
+            document.getElementById("food-qty").value = "";
 
         } catch (error) {
-            console.log("Error", error);
+            console.error("Error adding food:", error);
+            alert("Error adding food. Please try again.");
         }
     });
 }
 
-// function to get the total emissions value and it's new html
-const estimateBtn = document.getElementById("estimate-btn");
-if (estimateBtn) {
-    estimateBtn.addEventListener("click", async (e) => {
+// Update items list display
+function updateItemsList() {
+    const list = document.getElementById("items-list");
+    list.innerHTML = '';
+    
+    selectedItems.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "selected-item";
+        li.innerHTML = `
+            <div class="item-info">
+                <span class="item-name">${item.food}</span>
+                <span class="item-qty">${item.qty}g</span>
+            </div>
+            <button type="button" class="item-remove" onclick="removeItem(${index})">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        `;
+        list.appendChild(li);
+    });
+}
+
+// Remove item function
+function removeItem(index) {
+    selectedItems.splice(index, 1);
+    updateItemsList();
+}
+
+// Clear all items
+function clearAll() {
+    if (confirm('Clear all items?')) {
+        selectedItems = [];
+        updateItemsList();
+    }
+}
+
+// Handle form submission for estimates
+const estimateForm = document.getElementById("estimate-form");
+if (estimateForm) {
+    estimateForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        // get all the list elements form the index (so the foods selected) and make an array 
-        const foods = []
-
-        // finds all <li> elements inside the element items-list.
-        document.querySelectorAll("#items-list li").forEach(li => {
-            foods.push({
-                id: li.dataset.id,
-                food: li.dataset.food,
-                qty: li.dataset.qty
-            });
-        });
-
-        if (foods.length === 0) {
+        if (selectedItems.length === 0) {
             alert("Please add at least one food item.");
             return;
         }
 
-        // put array into the hidden input in the estimate form
-        document.getElementById('estimate-input').value = JSON.stringify(foods);
+        // Put array into the hidden input
+        document.getElementById('estimate-input').value = JSON.stringify(selectedItems);
 
-        // submit to Flask
-        document.getElementById('estimate-form').submit();
-
+        // Submit to Flask
+        estimateForm.submit();
     });
 }
-
-// listenber to the icon
-// const iconBtn = document.getElementById("icon-btn");
-// for the info display alert

@@ -1,73 +1,252 @@
 {% extends "layout.html" %}
 
-{% block title %} Estimates - Food Impact Calculator {% endblock %}
+{% block title %} Results - EcoCalc {% endblock %}
 {% block content %}
 
-    <h1> Total Impact of Food Consumption </h1>
-    <hr>
-    <p> This is only an estimate based on Kaggle Data </p>
-    <div class="container"> 
-        <h2>Your Total GreenHouse Emissions Are:</h2>
-        <h3>{{ total }}</h3>
+<div class="results-hero">
+    <div class="results-header">
+        <h1><i class="bi bi-clipboard-data"></i> Your Carbon Footprint Analysis</h1>
+        <p>Based on your weekly grocery selection</p>
     </div>
-    <br>
-    <h3>Here's a breakdown of how much each food contributed</h3>
-    <ul class="contribution-list">
-        {% for cont in contributions %}
-            <li>
-                <div class="left-side">
-                    <i class="bi bi-lightbulb-fill"></i>
-                    <span class="food">{{ cont.name }}</span>
+    
+    <div class="total-card">
+        <div class="total-label">Total Weekly Emissions</div>
+        <div class="total-value">{{ total }}</div>
+        <div class="total-unit">kg CO₂e</div>
+        <div class="total-context">
+            {% if total > 50 %}
+            <span class="badge badge-high"><i class="bi bi-exclamation-triangle"></i> High Impact</span>
+            {% elif total > 20 %}
+            <span class="badge badge-medium"><i class="bi bi-dash-circle"></i> Medium Impact</span>
+            {% else %}
+            <span class="badge badge-low"><i class="bi bi-check-circle"></i> Low Impact</span>
+            {% endif %}
+            <span class="context-text">≈ {{ annual_tons }} tons CO₂e per year</span>
+        </div>
+        
+        <!-- Real-world impact comparisons -->
+        {% if impact_comparisons %}
+        <div class="impact-comparisons">
+            <div class="comparison-label">That's equivalent to:</div>
+            <div class="comparison-grid">
+                {% for comp in impact_comparisons[:2] %}
+                <div class="comparison-item">
+                    <i class="bi bi-{{ comp.icon }}"></i>
+                    <div class="comparison-details">
+                        <strong>{{ comp.value }}</strong> {{ comp.unit }}
+                        <span class="comparison-desc">{{ comp.description }}</span>
+                    </div>
                 </div>
-                <span class="percent">{{ cont.contribution | round(2) }}%</span>
-            </li>
-        {% endfor %}
-    </ul>
-    <br><hr>
-    <div class="chart-container">
-        <h2 style="color: #76B3B5;">Dashboard Vizualization</h2>
-        <p> This bar chart is made with Chart.js and its based on the emissions in Kgs </p>
-        <canvas id="emissions-bar-chart"></canvas>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="results-container">
+    
+    <div class="breakdown-section">
+        <h2><i class="bi bi-pie-chart"></i> Emission Breakdown</h2>
+        <p class="section-subtitle">How each food contributes to your total footprint</p>
+        
+        <div class="breakdown-list">
+            {% for cont in contributions %}
+            <div class="breakdown-item">
+                <div class="breakdown-header">
+                    <div class="food-name">
+                        <div class="rank-badge">{{ loop.index }}</div>
+                        <span>{{ cont.name }}</span>
+                    </div>
+                    <div class="percentage">{{ cont.contribution | round(1) }}%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ cont.contribution }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Pass Flask variables into JavaScript
-        // Pass Flask variables into JavaScript
-        const labels = ({{ labels | tojson }});
-        const emissions = ({{ emissions | tojson }});
-        const percents = ({{ percents | tojson }});
+    {% if recommendations and estimates %}
+    <div class="recommendations-main">
+        <div class="section-header-lg">
+            <div>
+                <h2><i class="bi bi-stars"></i> AI-Powered Recommendations</h2>
+                <p class="section-subtitle">Lower-emission alternatives with similar nutritional profiles</p>
+            </div>
+        </div>
 
-        const barChart = document.getElementById("emissions-bar-chart");
-        if(barChart) {
-            
-            new Chart(barChart, {
-                type: 'bar',
-                data: {
-                    labels: labels, 
-                    datasets: [{
-                        label: 'Emissions in Kg CO2',
-                        data: emissions, 
-                        // yet to add teh colors
-                        borderwidth: 1
-                    }]
-                },
-                options: {
-                    // have an horizontal orientation
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { 
-                            title: { display: true, text: 'g CO₂e' , color: 'white'},
-                            ticks: { color: 'white' }},
-                        y: { 
-                            title: { display: true, text: 'Food Item' , color: 'white'}, 
-                            ticks: { color: 'white' }}
+        {% for est in estimates %}
+            {% set food_recs = recommendations.get(est.food_id, []) %}
+            {% if food_recs and food_recs|length > 0 %}
+            <div class="recommendation-block">
+                <div class="original-food-card">
+                    <div class="original-header">
+                        <h3>{{ est.food_name }}</h3>
+                        <div class="original-emissions">
+                            <span class="emissions-value">{{ est.week_emissions }}</span>
+                            <span class="emissions-unit">kg CO₂e/week</span>
+                        </div>
+                    </div>
+                    <p class="recommendation-intro">
+                        <i class="bi bi-arrow-down-circle"></i> 
+                        Consider these lower-impact alternatives:
+                    </p>
+                </div>
+
+                <div class="alternatives-grid">
+                    {% for alt in food_recs %}
+                    <div class="alternative-card">
+                        <div class="alt-badge">
+                            <i class="bi bi-award"></i> {{ (alt.similarity_score * 100) | round(0) }}% Match
+                        </div>
+                        <h4>{{ alt.name }}</h4>
+                        <div class="alt-stats">
+                            <div class="stat">
+                                <i class="bi bi-cloud"></i>
+                                <div>
+                                    <div class="stat-value">{{ alt.emissions }}</div>
+                                    <div class="stat-label">kg CO₂e</div>
+                                </div>
+                            </div>
+                            <div class="stat stat-savings">
+                                <i class="bi bi-arrow-down"></i>
+                                <div>
+                                    <div class="stat-value">-{{ alt.reduction_percent }}%</div>
+                                    <div class="stat-label">Reduction</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="savings-badge">
+                            Saves {{ alt.savings_kg }} kg CO₂e per week
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        
+        <!-- Show message if no recommendations available -->
+        {% set has_any_recs = namespace(value=false) %}
+        {% for est in estimates %}
+            {% if recommendations.get(est.food_id, [])|length > 0 %}
+                {% set has_any_recs.value = true %}
+            {% endif %}
+        {% endfor %}
+        {% if not has_any_recs.value %}
+        <div class="no-recommendations-card">
+            <i class="bi bi-check-circle"></i>
+            <h3>Great Choices!</h3>
+            <p>These foods already have relatively low emissions. We don't have lower-emission alternatives to suggest at this time.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="chart-section">
+        <h2><i class="bi bi-bar-chart"></i> Visual Analysis</h2>
+        <p class="section-subtitle">Emission comparison across your food choices</p>
+        <div class="chart-wrapper">
+            <canvas id="emissions-bar-chart"></canvas>
+        </div>
+    </div>
+
+    <div class="lca-section">
+        <h2><i class="bi bi-diagram-3"></i> Life Cycle Insights</h2>
+        <p class="section-subtitle">Understanding where emissions come from</p>
+        
+        <div class="lca-cards">
+            <div class="lca-card">
+                <i class="bi bi-geo-alt"></i>
+                <h4>Farm Stage</h4>
+                <p>Largest contributor for most foods. Includes methane from livestock, fertilizer use, and farming operations.</p>
+            </div>
+            <div class="lca-card">
+                <i class="bi bi-tree"></i>
+                <h4>Land Use</h4>
+                <p>Emissions from deforestation and land conversion, especially for beef, soy, and palm oil.</p>
+            </div>
+            <div class="lca-card">
+                <i class="bi bi-truck"></i>
+                <h4>Transport</h4>
+                <p>Often smaller than expected! Local vs. imported matters less than production method.</p>
+            </div>
+            <div class="lca-card">
+                <i class="bi bi-box-seam"></i>
+                <h4>Packaging</h4>
+                <p>Usually minimal impact compared to production, but reducing waste still helps.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="/" class="btn-secondary">
+            <i class="bi bi-arrow-left"></i> Calculate Again
+        </a>
+        <button onclick="window.print()" class="btn-outline">
+            <i class="bi bi-printer"></i> Print Report
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ labels | tojson }};
+    const emissions = {{ emissions | tojson }};
+    
+    const ctx = document.getElementById('emissions-bar-chart');
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#76B3B5');
+    gradient.addColorStop(0.5, '#5DD39E');
+    gradient.addColorStop(1, '#8CA2C0');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Weekly Emissions (kg CO₂e)',
+                data: emissions,
+                backgroundColor: gradient,
+                borderRadius: 8,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(17, 23, 42, 0.95)',
+                    padding: 12,
+                    titleColor: '#76B3B5',
+                    bodyColor: '#DFE5EC',
+                    borderColor: '#76B3B5',
+                    borderWidth: 1,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.x.toFixed(2) + ' kg CO₂e per week';
+                        }
                     }
                 }
-            });
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(118, 179, 181, 0.1)', drawBorder: false },
+                    ticks: { color: '#8CA2C0', font: { family: "'Inter', sans-serif", size: 12 } }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: { color: '#DFE5EC', font: { family: "'Inter', sans-serif", size: 13, weight: '500' } }
+                }
+            }
         }
-    </script>
+    });
+</script>
 
 {% endblock %}
