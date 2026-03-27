@@ -4,9 +4,12 @@ A modern, machine learning-powered web application to calculate the environmenta
 
 ## 📸 Preview
 
-<img width="1440" height="776" alt="Screen Shot 2025-08-13 at 19 25 46" src="https://github.com/user-attachments/assets/54b23271-f27e-4506-bbf0-7456ff5a6a9e" />
-<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 19 54" src="https://github.com/user-attachments/assets/4164c441-bdd3-4599-a08e-627627c42ffa" />
-<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 20 10" src="https://github.com/user-attachments/assets/bf38e2ca-362b-4697-b59d-6fdb25ff67bd" />
+<img width="1440" height="853" alt="Screen Shot 2026-03-27 at 12 22 38" src="https://github.com/user-attachments/assets/8274e476-8f36-42d9-8d85-965d54b96857" />
+<br>
+<img width="1439" height="840" alt="Screen Shot 2026-03-27 at 12 23 53" src="https://github.com/user-attachments/assets/d84c6f73-1497-4cfa-9f08-7a695e27966c" />
+<br>
+<img width="1440" height="851" alt="Screen Shot 2026-03-27 at 12 24 28" src="https://github.com/user-attachments/assets/26270168-be56-4e85-967d-7435a8ebe46a" />
+
 
 ## ✨ Features
 
