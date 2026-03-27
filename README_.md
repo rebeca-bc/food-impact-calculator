@@ -2,13 +2,16 @@
 
 A modern, machine learning-powered web application to calculate the environmental impact of your weekly food consumption with intelligent recommendations for lower-emission alternatives.
 
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
-![ML](https://img.shields.io/badge/ML-Powered-blue)
-![Design](https://img.shields.io/badge/Design-Modern-purple)
+## 📸 Preview
+
+<img width="1440" height="776" alt="Screen Shot 2025-08-13 at 19 25 46" src="https://github.com/user-attachments/assets/54b23271-f27e-4506-bbf0-7456ff5a6a9e" />
+<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 19 54" src="https://github.com/user-attachments/assets/4164c441-bdd3-4599-a08e-627627c42ffa" />
+<img width="1440" height="779" alt="Screen Shot 2025-08-13 at 19 20 10" src="https://github.com/user-attachments/assets/bf38e2ca-362b-4697-b59d-6fdb25ff67bd" />
 
 ## ✨ Features
 
 ### 🧮 **Carbon Footprint Calculator**
+
 - Input your weekly groceries (food type + quantity)
 - Get total CO₂ emissions instantly
 - See detailed breakdown by food item
@@ -17,6 +20,7 @@ A modern, machine learning-powered web application to calculate the environmenta
 - Annual emissions projection
 
 ### 🤖 **AI-Powered Recommendations**
+
 - Machine learning similarity algorithm (96.5% accuracy)
 - Recommends lower-emission alternatives
 - Shows similarity scores (how alike foods are)
@@ -24,7 +28,8 @@ A modern, machine learning-powered web application to calculate the environmenta
 - Beautiful card-based interface
 
 ### 📊 **Life Cycle Analysis**
-- Complete LCA from farm to retail
+
+- LCA from farm to retail
 - Insights on:
   - Farm operations (methane, fertilizers)
   - Land use changes (deforestation)
@@ -33,7 +38,8 @@ A modern, machine learning-powered web application to calculate the environmenta
 - Educational content debunking myths
 
 ### 🎨 **Modern UI/UX**
-- Professional dark theme
+
+- Dark + green theme (sustainability yet professional)
 - Responsive design (mobile/tablet/desktop)
 - Smooth animations
 - Gradient visualizations
@@ -43,7 +49,7 @@ A modern, machine learning-powered web application to calculate the environmenta
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone <https://github.com/rebeca-bc/food-impact-calculator.git>
 cd food-impact-calculator
 
 # Create virtual environment
@@ -69,6 +75,7 @@ flask run
 ## 🛠 Tech Stack
 
 ### Backend
+
 - **Flask** - Web framework
 - **Python 3** - Programming language
 - **SQLite** - Database
@@ -78,42 +85,29 @@ flask run
   - Cosine Similarity
 
 ### Frontend
+
 - **HTML5/CSS3** - Structure & styling
 - **JavaScript (ES6)** - Interactivity
 - **Chart.js** - Data visualization
 - **Bootstrap Icons** - Icons
-- **Inter Font** - Typography
 
 ### Machine Learning
+
 - **Regression Model**: Predicts emissions from supply chain data
 - **Recommendation Engine**: Finds similar, lower-emission alternatives
 - **R² Score**: 0.9653 (96.5% accuracy)
 - **MAE**: 0.86 kg CO₂e
 
-## 📖 Documentation
-
-### Getting Started
-- **QUICK_START.md** - How to run the app
-- **README.md** - This file
-
-### ML & Implementation
-- **ML_GUIDE.md** (10KB) - Learn ML concepts step-by-step
-- **IMPLEMENTATION_SUMMARY.md** (10KB) - ML implementation details
-- **ARCHITECTURE.md** (22KB) - System architecture diagrams
-
-### Recent Updates
-- **REDESIGN_SUMMARY.md** (13KB) - Complete UI/UX redesign details
-- **VISUAL_GUIDE.md** (13KB) - Visual improvements explained
-- **PROJECT_STATUS.md** (10KB) - Current project status
-- **CHANGES_AT_A_GLANCE.txt** - Quick reference card
-
 ## 🎯 How It Works
 
 ### 1. User Input
-Select foods and quantities from a database of 43 foods with complete emission data.
+
+Select foods and quantities from a database of foods with complete emission data.
 
 ### 2. Calculation
+
 Calculate total weekly emissions based on:
+
 - Land use change
 - Animal feed production
 - Farm operations
@@ -123,39 +117,17 @@ Calculate total weekly emissions based on:
 - Retail
 
 ### 3. ML Recommendations
+
 AI analyzes your selections and recommends:
+
 - Similar foods (using cosine similarity)
 - Lower emissions (≤80% of original)
 - Ranked by similarity score
 - Shows potential savings
 
 ### 4. Visualization
+
 Beautiful charts and insights to understand your impact.
-
-## 📊 Sample Results
-
-```
-Total Weekly Emissions: 52.3 kg CO₂e
-Annual Impact: ~2.7 tons CO₂e
-
-Breakdown:
-1. Beef (500g)     → 49.74 kg CO₂e (95.2%)
-2. Chicken (300g)  →  1.97 kg CO₂e (3.8%)
-3. Rice (200g)     →  0.52 kg CO₂e (1.0%)
-
-Recommendations for Beef:
-→ Poultry Meat (95% similar) - Saves 80% (-39.87 kg)
-→ Pork (89% similar) - Saves 75% (-37.44 kg)
-```
-
-## 🎨 Design Highlights
-
-- **Modern Dark Theme**: Professional gradient backgrounds
-- **Card-Based Layout**: Clean, organized sections
-- **Responsive Grid**: Works on all devices
-- **Smooth Animations**: Hover effects, transitions
-- **Visual Hierarchy**: Clear information flow
-- **Accessibility**: Semantic HTML, high contrast
 
 ## 📁 Project Structure
 
@@ -184,6 +156,7 @@ food-impact-calculator/
 ## 🧠 Machine Learning Details
 
 ### Regression Model
+
 - **Algorithm**: Random Forest Regressor
 - **Features**: 7 supply chain stages
 - **Target**: Total emissions
@@ -193,14 +166,16 @@ food-impact-calculator/
   - RMSE: 1.46 kg CO₂e
 
 ### Recommendation System
+
 - **Algorithm**: Cosine Similarity
 - **Approach**: Collaborative filtering
-- **Criteria**: 
+- **Criteria**:
   - High similarity (>0.8)
   - Lower emissions (≤80%)
   - Ranked by similarity
 
 ### Feature Importance
+
 1. Farm Operations (48.76%)
 2. Land Use Change (36.95%)
 3. Processing (5.31%)
@@ -209,31 +184,11 @@ food-impact-calculator/
 6. Transport (1.63%)
 7. Retail (0.26%)
 
-## 🤝 Contributing
-
-This is a learning project, but suggestions are welcome!
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a pull request
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
 ## 🙏 Acknowledgments
 
 - **Data Source**: Kaggle - Food Production Emissions Dataset
 - **ML Libraries**: scikit-learn
 - **Visualization**: Chart.js
-- **Icons**: Bootstrap Icons
-- **Font**: Inter by Rasmus Andersson
-
-## 📧 Contact
-
-For questions or feedback, open an issue on GitHub.
 
 ---
 
